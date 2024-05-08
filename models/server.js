@@ -17,6 +17,8 @@ class Server {
         
    
         this.io = socketio( this.server, { /* configuraciones */ } );
+
+        this.sockets = new Sockets( this.io )
     }
 
     middlewares() {
@@ -25,17 +27,19 @@ class Server {
 
         this.app.use( cors() );
 
+        this.app.get('/last', ( _, res )=>{
+            res.status(200).json({
+                lastTickets: this.sockets.ticket.last13
+            })
+        })
+
     }
 
-    configurarSockets() {
-        new Sockets( this.io );
-    }
+   
 
     execute() {
 
         this.middlewares();
-
-        this.configurarSockets();
 
         this.server.listen( this.port, () => {
             console.log('Server corriendo en puerto:', this.port );

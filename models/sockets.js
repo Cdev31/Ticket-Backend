@@ -15,17 +15,20 @@ class Sockets {
     socketEvents() {
         
         this.io.on('connection', ( socket ) => {
-            console.log('cliente conectado')
             
            socket.on('new-ticket', ( data, call )=>{
+            
             const newTicket = this.ticket.createTicket()
             call( newTicket )
 
            })
 
            socket.on('next-ticket', ( user, call )=>{
+
             const yourTicket = this.ticket.assignedTicket( user.agente, user.escritorio )
             call( yourTicket )
+
+            this.io.emit('assigned-ticket', this.ticket.last13)
            })
             
         
